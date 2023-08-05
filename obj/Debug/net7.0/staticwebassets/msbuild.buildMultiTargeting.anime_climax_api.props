@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\anime_climax_api.props" />
+</Project>
