@@ -10,6 +10,10 @@ builder.Services.AddDbContext<DataContext>(options =>
         options.UseNpgsql("Host=publisher-11849.7tt.cockroachlabs.cloud;Port=26257;Database=anime_climax;Username=pichan;Password=05N6AQXVg18ayJ22FnbFnQ;SslMode=VerifyFull"
 ));
 builder.Services.AddControllers();
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -33,8 +37,7 @@ if (app.Environment.IsDevelopment())
 
 //CORS MIDDLEWARE
 app.UseCors(MyAllowSpecificOrigins);
-
-app.UseHttpsRedirection();
+app.UseHttpLogging();
 app.UseAuthorization();
 
 app.MapControllers();

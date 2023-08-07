@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using anime_climax_api.Database;
 using anime_climax_api.Models;
+using System.Dynamic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -9,14 +10,18 @@ using anime_climax_api.Binding;
 using uplink.NET.Services;
 using uplink.NET.Models;
 using Microsoft.EntityFrameworkCore;
-
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
 namespace anime_climax_api.Controllers;
 
 [ApiController]
 [Route("anime")]
 public class AnimeController : ControllerBase {
     private const String SECRET = "pichan327";
-    private readonly int RESULT_PER_PAGE = 15;
+    private readonly int RESULT_PER_PAGE = 16;
     private readonly DataContext _db;
 
     public AnimeController(DataContext db)
@@ -35,12 +40,21 @@ public class AnimeController : ControllerBase {
         if (anime == null) {
             return NotFound();
         }
-        return Ok(anime);
+        int clipCounts = _db.Clips.Count(clip => clip.Anime.ID == anime.ID);
+        dynamic response = new {
+            anime,
+            clipCounts = clipCounts
+        };
+        return Ok(response);
     }
 
     [HttpGet("/anime/{id}/clips")]
-    public IActionResult GetClips(int id) {
-        List<Clips> clips =_db.Clips.Include(clip => clip.Anime).Where(c => c.Anime.ID == id).ToList();
+    public IActionResult GetClips(int id, [FromQuery] int page = 1) {
+        if (page <= 0) {
+            return Ok(new List<Animes>());
+        }
+        int skip = page == 1 ? 0 : RESULT_PER_PAGE * (page - 1);
+        List<Clips> clips =_db.Clips.Include(clip => clip.Anime).Where(c => c.Anime.ID == id).Skip(skip).Take(RESULT_PER_PAGE).ToList();
 
         return Ok(clips);
     }
@@ -94,52 +108,55 @@ public IActionResult DeleteAnime(int id)
 
 
     [HttpPost("/anime/clip/add-clip")]
+    [RequestSizeLimit(100_000_000)]
       public async Task<IActionResult> AddNewClip(int id, [FromForm] NewClip clip)
         {
             try
             {
-                if (clip.File.Length == 0){return BadRequest(); }
+                // if (clip.File.Length == 0){return BadRequest(); }
 
-                byte[] buffer = new byte[10 * 1024 * 1024];
+                // byte[] buffer = new byte[10 * 1024 * 1024];
              
-                Uploader uploader = new Uploader(_db);
+                // Uploader uploader = new Uploader(_db);
                 float fileSizeMB = clip.File.Length / (1024 * 1024);
-                Buckets bucket = uploader.PickBucket(fileSizeMB).Result;
-                if (bucket == null) {
-                    return StatusCode(StatusCodes.Status500InternalServerError, new {Message = "Internal server error"});
-                }
+                // Buckets bucket = uploader.PickBucket(fileSizeMB).Result;
+                // if (bucket == null) {
+                //     return StatusCode(StatusCodes.Status500InternalServerError, new {Message = "Internal server error"});
+                // }
                 
                 
-                var uploadService = uploader.Upload(bucket, clip).Result;
+                // var uploadService = uploader.Upload(bucket, clip).Result;
                 
-                const int bufferSize = 10 * 1024 * 1024;
-                byte[] bufferArray = new byte[bufferSize];
-                uint part = 1;
-                Stream stream = clip.File.OpenReadStream();
-                int n;
-                while ((n = stream.Read(bufferArray, 0, bufferSize)) > 0) {
-                        await uploadService.Item3.UploadPartAsync(bucket.BucketName, uploadService.Item1, uploadService.Item2.UploadId, part, bufferArray[0..n]);
-                        part++;
-                        Console.WriteLine(n);
-                }
+                // const int bufferSize = 10 * 1024 * 1024;
+                // byte[] bufferArray = new byte[bufferSize];
+                // uint part = 1;
+                // Stream stream = clip.File.OpenReadStream();
+                // int n;
+                // while ((n = stream.Read(bufferArray, 0, bufferSize)) > 0) {
+                //         await uploadService.Item3.UploadPartAsync(bucket.BucketName, uploadService.Item1, uploadService.Item2.UploadId, part, bufferArray[0..n]);
+                //         part++;
+                //         Console.WriteLine(n);
+                // }
             
-                await uploadService.Item3.CommitUploadAsync(bucket.BucketName, uploadService.Item1, uploadService.Item2.UploadId, new CommitUploadOptions());
+                // await uploadService.Item3.CommitUploadAsync(bucket.BucketName, uploadService.Item1, uploadService.Item2.UploadId, new CommitUploadOptions());
                 
-                bucket.Usage += fileSizeMB;
+                // bucket.Usage += fileSizeMB;
                 Animes anime = _db.Animes.Where(anime => anime.ID == clip.AnimeID).FirstOrDefault();
                 Clips clipToAdd = new Clips{
                     Caption = clip.Caption,
                     Tags = clip.Tags,
                     Anime = anime,
                     Thumbnail = clip.Thumbnail,
+                    Episode = 0,
                     Size = clip.File.Length,
                     SizeMB = fileSizeMB,
-                    Link = bucket.ShareLink + uploadService.Item1 + "?wrap=0",
+                    // Link = bucket.ShareLink + uploadService.Item1 + "?wrap=0",
+                    Link = "",
                     DateAdded = DateTimeOffset.UtcNow.UtcDateTime,
                 };
-                _db.Buckets.Add(bucket);
+                // _db.Buckets.Update(bucket);
                 _db.Clips.Add(clipToAdd);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return Ok(clipToAdd);
             }
             catch (Exception ex) {
@@ -153,6 +170,36 @@ public IActionResult DeleteAnime(int id)
         return Ok();
     }
 
+[HttpPost("/anime/image")]
+    public async Task<IActionResult> ProcessImage(IFormFile file)
+    {
+        // Ensure the file is not null and is a valid image
+        if (file == null || file.Length == 0 )
+        {
+            return BadRequest("Invalid image file");
+        }
+
+        using (MemoryStream memoryStream = new MemoryStream())
+        {
+            await file.CopyToAsync(memoryStream);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            using (Image<Rgba32> image = Image.Load<Rgba32>(memoryStream))
+            // using (MemoryStream outputMemoryStream = new MemoryStream())
+            // {
+            //     // Process the image (resize in this example)
+            //     image.Mutate(ctx => ctx.Resize(new ResizeOptions { Size = new Size(800, 600), Mode = ResizeMode.Max }));
+
+            //     // Save the modified image to the output memory stream
+            //     image.Save(outputMemoryStream, new PngEncoder());
+
+            //     // Create an HTTP response with the modified image data
+            //     byte[] modifiedImageBytes = outputMemoryStream.ToArray();
+            return Ok(image);
+                // return File(modifiedImageBytes, "image/png"); // Set the appropriate content type
+            }
+        }
+    
 
 
     [HttpGet("/test")]
