@@ -22,5 +22,5 @@ public class Buckets {
     
     public float Capacity { get; set; } = 25000 * MB;
 
-    public Accounts Account { get; set; }
+    public required Accounts Account { get; set; }
 }

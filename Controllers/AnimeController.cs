@@ -113,48 +113,47 @@ public IActionResult DeleteAnime(int id)
         {
             try
             {
-                // if (clip.File.Length == 0){return BadRequest(); }
+                if (clip.File.Length == 0){return BadRequest();}
 
-                // byte[] buffer = new byte[10 * 1024 * 1024];
+                byte[] buffer = new byte[10 * 1024 * 1024];
              
-                // Uploader uploader = new Uploader(_db);
+                Uploader uploader = new Uploader(_db);
                 float fileSizeMB = clip.File.Length / (1024 * 1024);
-                // Buckets bucket = uploader.PickBucket(fileSizeMB).Result;
-                // if (bucket == null) {
-                //     return StatusCode(StatusCodes.Status500InternalServerError, new {Message = "Internal server error"});
-                // }
+                Buckets bucket = uploader.PickBucket(fileSizeMB).Result;
+                if (bucket == null) {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new {Message = "Internal server error"});
+                }
                 
                 
-                // var uploadService = uploader.Upload(bucket, clip).Result;
+                var uploadService = uploader.Upload(bucket, clip).Result;
                 
-                // const int bufferSize = 10 * 1024 * 1024;
-                // byte[] bufferArray = new byte[bufferSize];
-                // uint part = 1;
-                // Stream stream = clip.File.OpenReadStream();
-                // int n;
-                // while ((n = stream.Read(bufferArray, 0, bufferSize)) > 0) {
-                //         await uploadService.Item3.UploadPartAsync(bucket.BucketName, uploadService.Item1, uploadService.Item2.UploadId, part, bufferArray[0..n]);
-                //         part++;
-                //         Console.WriteLine(n);
-                // }
+                const int bufferSize = 10 * 1024 * 1024;
+                byte[] bufferArray = new byte[bufferSize];
+                uint part = 1;
+                Stream stream = clip.File.OpenReadStream();
+                int n;
+                while ((n = stream.Read(bufferArray, 0, bufferSize)) > 0) {
+                        await uploadService.Item3.UploadPartAsync(bucket.BucketName, uploadService.Item1, uploadService.Item2.UploadId, part, bufferArray[0..n]);
+                        part++;
+                        Console.WriteLine(n);
+                }
             
-                // await uploadService.Item3.CommitUploadAsync(bucket.BucketName, uploadService.Item1, uploadService.Item2.UploadId, new CommitUploadOptions());
+                await uploadService.Item3.CommitUploadAsync(bucket.BucketName, uploadService.Item1, uploadService.Item2.UploadId, new CommitUploadOptions());
                 
-                // bucket.Usage += fileSizeMB;
+                bucket.Usage += fileSizeMB;
                 Animes anime = _db.Animes.Where(anime => anime.ID == clip.AnimeID).FirstOrDefault();
                 Clips clipToAdd = new Clips{
                     Caption = clip.Caption,
                     Tags = clip.Tags,
                     Anime = anime,
                     Thumbnail = clip.Thumbnail,
-                    Episode = 0,
+                    Episode = clip.Episode > 0 ? clip.Episode : 0,
                     Size = clip.File.Length,
                     SizeMB = fileSizeMB,
-                    // Link = bucket.ShareLink + uploadService.Item1 + "?wrap=0",
-                    Link = "",
+                    Link = bucket.ShareLink + uploadService.Item1 + "?wrap=0",
                     DateAdded = DateTimeOffset.UtcNow.UtcDateTime,
                 };
-                // _db.Buckets.Update(bucket);
+                _db.Buckets.Update(bucket);
                 _db.Clips.Add(clipToAdd);
                 _db.SaveChanges();
                 return Ok(clipToAdd);

@@ -42,11 +42,9 @@ public class Uploader {
             
             MultipartUploadService uploadService = new MultipartUploadService(access);
             long timeStamp = getUnixTimestamp();
-            UploadOptions options = new();
-            options.Expires = getExpiratonDate();
             
             String objectKey = String.Format("{0}-{1}", timeStamp, clip.File.FileName);
-            UploadInfo uploadInfo = uploadService.BeginUploadAsync(bucket.BucketName, objectKey , options).Result;
+            UploadInfo uploadInfo = uploadService.BeginUploadAsync(bucket.BucketName, objectKey , new UploadOptions()).Result;
 
             return (objectKey, uploadInfo, uploadService);
         } catch {
