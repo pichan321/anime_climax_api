@@ -36,8 +36,8 @@ public class Uploader {
 
     public async Task<(string, UploadInfo, MultipartUploadService)> Upload(Buckets bucket, NewClip clip) {
         try {
-            if (bucket == null) {
-                throw new Exception("null Bucket object")
+            if (bucket == null || bucket.Token == "") {
+                throw new Exception("bad Bucket object");
             }
             Access access = new Access(accessGrant: bucket.Token);
             BucketService bucketService = new BucketService(access);
