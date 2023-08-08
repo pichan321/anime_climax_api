@@ -794,6 +794,18 @@
           "lib/netstandard2.0/uplink.NET.dll": {}
         }
       },
+      "uplink.NET.Linux/2.9.3135": {
+        "type": "package",
+        "build": {
+          "build/net6.0/uplink.NET.Linux.targets": {}
+        },
+        "runtimeTargets": {
+          "runtimes/linux-x64/native/storj_uplink.so": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          }
+        }
+      },
       "uplink.NET.Win/2.9.3135": {
         "type": "package",
         "build": {
@@ -2073,6 +2085,21 @@
         "uplink.net.nuspec"
       ]
     },
+    "uplink.NET.Linux/2.9.3135": {
+      "sha512": "ynscG7H5IR9tPeGMaJeO0yczZ8V/vHMnt6iliXJFcmwHvzn2Tpmo/hRE/nkSgfcoag5TGs9EzAQz4wb1zK7D9w==",
+      "type": "package",
+      "path": "uplink.net.linux/2.9.3135",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Storj-symbol.png",
+        "build/net40/uplink.NET.Linux.targets",
+        "build/net6.0/uplink.NET.Linux.targets",
+        "runtimes/linux-x64/native/storj_uplink.so",
+        "uplink.net.linux.2.9.3135.nupkg.sha512",
+        "uplink.net.linux.nuspec"
+      ]
+    },
     "uplink.NET.Win/2.9.3135": {
       "sha512": "RzhI3E4pDMaYzNlNXoVYUajYpzuN5QAFGheQy4F+E5smNlXu82+d/bOGOiTr7fb3GULM+asjdLpOM5oWw5a92g==",
       "type": "package",
@@ -2100,6 +2127,7 @@
       "SixLabors.ImageSharp >= 3.0.1",
       "Swashbuckle.AspNetCore >= 6.4.0",
       "uplink.NET >= 2.9.3135",
+      "uplink.NET.Linux >= 2.9.3135",
       "uplink.NET.Win >= 2.9.3135"
     ]
   },
@@ -2109,11 +2137,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\anime_climax_api.csproj",
+      "projectUniqueName": "c:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\anime_climax_api.csproj",
       "projectName": "anime_climax_api",
-      "projectPath": "C:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\anime_climax_api.csproj",
+      "projectPath": "c:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\anime_climax_api.csproj",
       "packagesPath": "C:\\Users\\danie\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\obj\\",
+      "outputPath": "c:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\danie\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -2171,6 +2199,10 @@
             "version": "[6.4.0, )"
           },
           "uplink.NET": {
+            "target": "Package",
+            "version": "[2.9.3135, )"
+          },
+          "uplink.NET.Linux": {
             "target": "Package",
             "version": "[2.9.3135, )"
           },
