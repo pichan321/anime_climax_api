@@ -40,14 +40,14 @@ public class Uploader {
             BucketService bucketService = new BucketService(access);
             await bucketService.EnsureBucketAsync(bucket.BucketName);
             
-            MultipartUploadService uploadService = new MultipartUploadService(access);
-            long timeStamp = getUnixTimestamp();
+            // MultipartUploadService uploadService = new MultipartUploadService(access);
+            // long timeStamp = getUnixTimestamp();
 
-            string objectKey = string.Format("{0}-{1}", timeStamp, clip.File.FileName);
-            Console.WriteLine("Object key" + objectKey);
-            UploadInfo uploadInfo = uploadService.BeginUploadAsync(bucket.BucketName, objectKey , new UploadOptions()).Result;
+            // string objectKey = string.Format("{0}-{1}", timeStamp, clip.File.FileName);
+            // Console.WriteLine("Object key" + objectKey);
+            // UploadInfo uploadInfo = uploadService.BeginUploadAsync(bucket.BucketName, objectKey , new UploadOptions()).Result;
          
-            return (objectKey, uploadInfo, uploadService);
+            return ("", null, null);
         } catch {
             throw new Exception("Failed to initiate download service");
         }
