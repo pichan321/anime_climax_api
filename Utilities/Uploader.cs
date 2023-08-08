@@ -1,5 +1,6 @@
 using uplink.NET.Services;
 using uplink.NET.Models;
+
 using anime_climax_api.Models;
 using anime_climax_api.Database;
 using anime_climax_api.Binding;
@@ -48,7 +49,7 @@ public class Uploader {
 
             string objectKey = string.Format("{0}-{1}", timeStamp, clip.File.FileName);
             Console.WriteLine("Object key" + objectKey);
-            UploadInfo uploadInfo = uploadService.BeginUploadAsync(bucket.BucketName, objectKey , new UploadOptions()).Result;
+            UploadInfo uploadInfo = await uploadService.BeginUploadAsync(bucket.BucketName, objectKey , new UploadOptions());
          
             return ("", uploadInfo, uploadService);
         } catch {
