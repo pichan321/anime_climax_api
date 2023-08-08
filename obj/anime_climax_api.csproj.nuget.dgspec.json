@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\anime_climax_api.csproj": {}
+    "c:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\anime_climax_api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\anime_climax_api.csproj": {
+    "c:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\anime_climax_api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\anime_climax_api.csproj",
+        "projectUniqueName": "c:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\anime_climax_api.csproj",
         "projectName": "anime_climax_api",
-        "projectPath": "C:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\anime_climax_api.csproj",
+        "projectPath": "c:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\anime_climax_api.csproj",
         "packagesPath": "C:\\Users\\danie\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\obj\\",
+        "outputPath": "c:\\Users\\danie\\Desktop\\Projects\\anime_climax_api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\danie\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -69,6 +69,10 @@
               "version": "[6.4.0, )"
             },
             "uplink.NET": {
+              "target": "Package",
+              "version": "[2.9.3135, )"
+            },
+            "uplink.NET.Linux": {
               "target": "Package",
               "version": "[2.9.3135, )"
             },
