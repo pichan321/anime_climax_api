@@ -208,10 +208,10 @@ public IActionResult DeleteAnime(int id)
         try {
             Access access = new Access("15M6fjomdWMwh4cdbZx5YmDQpQsc8EN73sYKcfLodh6yz6PXEbNJe1WKFvKrwMotebVhRWPiihQoPEuKkaEt1reW5WhPwipmRZnqcfnA73kUviGwRcB4onirZgySzZJ881rUVWrwcmg4LfpwEXubRBvtavDDfGH6q5hdjxq2K2WcXGWYoaVMViRjijtD8qZHvmq39Jo6mqo5KqV2URGkN2vJFNpjnmSPaa16Hu3wyWJoTGgEHW7irkmPcC5QhshVk9SQvyMzyJFrQevinDigriF2uN6XGYXwt");
             BucketService bucketService = new BucketService(access);
-            BucketList bucketList = bucketService.ListBucketsAsync(new ListBucketsOptions()).Result;
+            BucketList bucketList = await bucketService.ListBucketsAsync(new ListBucketsOptions());
             return Ok(bucketList);
         } catch {
-            
+            throw new Exception("");
         }
    
 
