@@ -204,9 +204,10 @@ public IActionResult DeleteAnime(int id)
 
     [HttpGet("/test")]
     public IActionResult Test() {
-        Uploader uploader = new Uploader(_db);
-        Access access = new Access("15M6fjomdWMwh4cdbZx5YmDQpQsc8EN73sYKcfLodh6yz6PXEbNJe1WKFvKrwMotebVhRWPiihQoPEuKkaEt1reW5WhPwipmRZnqcfnA6ATKsf6ApbkjvjtJaG1YRZMshrYoTi1Xp5CpFHMLHBaHHBaJNTZjXKfwLDaNFFyE9cGjWZpSYkFzu2Xhc3joQ3QyyakkjETrDR2fWkuxjAJNGGaBpRTMdXwJp3awCMV5jgMsvqA47qC3ocrSBM3vn7bBjt22BResHwrEvJCMC3bqt8oR1NkZc9ip5");
-        // uploader.Upload();
+    
+      
+        Access access = new Access("15M6fjomdWMwh4cdbZx5YmDQpQsc8EN73sYKcfLodh6yz6PXEbNJe1WKFvKrwMotebVhRWPiihQoPEuKkaEt1reW5WhPwipmRZnqcfnA73kUviGwRcB4onirZgySzZJ881rUVWrwcmg4LfpwEXubRBvtavDDfGH6q5hdjxq2K2WcXGWYoaVMViRjijtD8qZHvmq39Jo6mqo5KqV2URGkN2vJFNpjnmSPaa16Hu3wyWJoTGgEHW7irkmPcC5QhshVk9SQvyMzyJFrQevinDigriF2uN6XGYXwt");
+        BucketService bucketService = new BucketService(access);
         return Ok();
     }
 
