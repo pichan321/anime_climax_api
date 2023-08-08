@@ -51,7 +51,7 @@ public class Uploader {
             Console.WriteLine("Object key" + objectKey);
             UploadInfo uploadInfo = await uploadService.BeginUploadAsync(bucket.BucketName, objectKey , new UploadOptions());
          
-            return ("", uploadInfo, uploadService);
+            return (objectKey, uploadInfo, uploadService);
         } catch {
             throw new Exception("Failed to initiate download service");
         }
