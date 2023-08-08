@@ -34,7 +34,7 @@ public class Uploader {
         }
     }
 
-    public async Task<(String, UploadInfo, MultipartUploadService)> Upload(Buckets bucket, NewClip clip) {
+    public async Task<(string, UploadInfo, MultipartUploadService)> Upload(Buckets bucket, NewClip clip) {
         try {
             Access access = new Access(bucket.Token);
             BucketService bucketService = new BucketService(access);
@@ -42,10 +42,11 @@ public class Uploader {
             
             MultipartUploadService uploadService = new MultipartUploadService(access);
             long timeStamp = getUnixTimestamp();
-            
-            String objectKey = string.Format("{0}-{1}", timeStamp, clip.File.FileName);
-            UploadInfo uploadInfo = uploadService.BeginUploadAsync(bucket.BucketName, objectKey , new UploadOptions()).Result;
+
+            string objectKey = string.Format("{0}-{1}", timeStamp, clip.File.FileName);
             Console.WriteLine("Object key" + objectKey);
+            UploadInfo uploadInfo = uploadService.BeginUploadAsync(bucket.BucketName, objectKey , new UploadOptions()).Result;
+         
             return (objectKey, uploadInfo, uploadService);
         } catch {
             throw new Exception("Failed to initiate download service");
