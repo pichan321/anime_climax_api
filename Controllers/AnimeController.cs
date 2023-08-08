@@ -140,11 +140,12 @@ public IActionResult DeleteAnime(int id)
             
                 await uploadService.Item3.CommitUploadAsync(bucket.BucketName, uploadService.Item1, uploadService.Item2.UploadId, new CommitUploadOptions());
                 
+                Console.WriteLine("Episode: " + clip.Episode);
                 bucket.Usage += fileSizeMB;
                 Animes anime = _db.Animes.Where(anime => anime.ID == clip.AnimeID).FirstOrDefault();
                 Clips clipToAdd = new Clips{
                     Caption = clip.Caption,
-                    Tags = clip.Tags,
+                    Tags = clip.Tags != null ? clip.Tags : "",
                     Anime = anime,
                     Thumbnail = clip.Thumbnail,
                     Episode = clip.Episode > 0 ? clip.Episode : 0,
