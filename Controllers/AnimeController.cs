@@ -66,6 +66,7 @@ public class AnimeController : ControllerBase {
             return Ok(new List<Animes>());
         }
         int skip = page == 1 ? 0 : RESULT_PER_PAGE * (page - 1);
+        if (filter is null) {filter = "";}
         //// || c.Episode.ToString().Contains(filter)
         List<Clips> clips = filter == "" 
         ? _db.Clips.Include(clip => clip.Anime).Where(c => c.Anime.ID == id).Skip(skip).Take(RESULT_PER_PAGE).ToList()
