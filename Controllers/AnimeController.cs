@@ -18,7 +18,7 @@ using SixLabors.ImageSharp.Formats.Png;
 namespace anime_climax_api.Controllers;
 
 [ApiController]
-[Route("anime")]
+[Route("anime/")]
 public class AnimeController : ControllerBase {
     private const String SECRET = "pichan327";
     private readonly int RESULT_PER_PAGE = 16;
@@ -29,12 +29,24 @@ public class AnimeController : ControllerBase {
         _db = db;
     }
 
-    [HttpGet("/anime/")]
+    [HttpGet("")]
     public String Hello() {
         return "Hello there";
     }
 
-    [HttpGet("/anime/{id}")]
+    
+    [HttpGet("animes")]
+    public IActionResult GetAllAnimes([FromQuery] String? filter)
+    {
+        if (filter == "" || filter is null || filter.ToLower().Contains("any") || filter.ToLower().Contains("all")) {
+            List<Animes> allAnimes = _db.Animes.ToList();
+            return Ok(allAnimes);
+        }
+        List<Animes> filteredAnimes = _db.Animes.Where(anime => anime.Type.ToLower().Contains(filter.ToLower())).ToList();
+        return Ok(filteredAnimes);
+    }
+
+    [HttpGet("{id}")]
     public IActionResult GetAnime(int id) {
         Animes anime = _db.Animes.Find(id);
         if (anime == null) {
@@ -48,25 +60,21 @@ public class AnimeController : ControllerBase {
         return Ok(response);
     }
 
-    [HttpGet("/anime/{id}/clips")]
-    public IActionResult GetClips(int id, [FromQuery] int page = 1) {
+    [HttpGet("{id}/clips")]
+    public IActionResult GetClips(int id, [FromQuery] int page = 1, [FromQuery] String? filter = "") {
         if (page <= 0) {
             return Ok(new List<Animes>());
         }
         int skip = page == 1 ? 0 : RESULT_PER_PAGE * (page - 1);
-        List<Clips> clips =_db.Clips.Include(clip => clip.Anime).Where(c => c.Anime.ID == id).Skip(skip).Take(RESULT_PER_PAGE).ToList();
-
+        //// || c.Episode.ToString().Contains(filter)
+        List<Clips> clips = filter == "" 
+        ? _db.Clips.Include(clip => clip.Anime).Where(c => c.Anime.ID == id).Skip(skip).Take(RESULT_PER_PAGE).ToList()
+        : _db.Clips.Include(clip => clip.Anime).Where(
+            c => c.Anime.ID == id && (c.Caption.ToLower().Contains(filter.ToLower()) || c.Episode.ToString().Contains(filter.ToLower()))).Skip(skip).Take(RESULT_PER_PAGE).ToList();
         return Ok(clips);
     }
 
-    [HttpGet("/anime/animes")]
-    public IActionResult GetAllAnimes()
-    {
-        List<Animes> allAnimes = _db.Animes.ToList();
-        return Ok(allAnimes);
-    }
-
-    [HttpPost("/anime/add")]
+    [HttpPost("add")]
     public IActionResult AddNewAnime( [FromBody] Animes anime) {
         try {
             _db.Animes.Add(new Animes{
@@ -81,7 +89,7 @@ public class AnimeController : ControllerBase {
         }
     }
 
-[HttpDelete("/anime/delete/{id}")]
+[HttpDelete("delete/{id}")]
 public IActionResult DeleteAnime(int id)
 {
     try
@@ -107,7 +115,7 @@ public IActionResult DeleteAnime(int id)
 }
 
 
-    [HttpPost("/anime/clip/add-clip")]
+    [HttpPost("clip/add-clip")]
     [RequestSizeLimit(100_000_000)]
       public async Task<IActionResult> AddNewClip(int id, [FromForm] NewClip clip)
         {
@@ -125,7 +133,7 @@ public IActionResult DeleteAnime(int id)
                 }
                 
                 
-                var uploadService = uploader.Upload(bucket, clip).Result;
+                var uploadService = await uploader.Upload(bucket, clip);
                 
                 const int bufferSize = 10 * 1024 * 1024;
                 byte[] bufferArray = new byte[bufferSize];
@@ -164,13 +172,13 @@ public IActionResult DeleteAnime(int id)
             }
     }
 
-    [HttpDelete("/anime/{id}/clip/delete")]
+    [HttpDelete("{id}/clip/delete")]
     public IActionResult DeleteClip() {
 
         return Ok();
     }
 
-[HttpPost("/anime/image")]
+[HttpPost("image")]
     public async Task<IActionResult> ProcessImage(IFormFile file)
     {
         // Ensure the file is not null and is a valid image
@@ -202,7 +210,7 @@ public IActionResult DeleteAnime(int id)
     
 
 
-    [HttpGet("/test")]
+    [HttpGet("test")]
     async public Task<IActionResult> Test() {
     
         try {

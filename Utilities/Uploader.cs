@@ -40,6 +40,7 @@ public class Uploader {
             if (bucket == null || bucket.Token == "") {
                 throw new Exception("bad Bucket object");
             }
+            
             Access access = new Access(accessGrant: bucket.Token);
             BucketService bucketService = new BucketService(access);
             await bucketService.EnsureBucketAsync(bucket.BucketName);
