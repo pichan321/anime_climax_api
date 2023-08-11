@@ -61,7 +61,7 @@ public class AnimeController : ControllerBase {
     }
 
     [HttpGet("{id}/clips")]
-    public IActionResult GetClips(int id, [FromQuery] int page = 1, [FromQuery] String? filter = "") {
+    public IActionResult GetClips(int id, [FromQuery] int page = 1, [FromQuery] String filter = "") {
         if (page <= 0) {
             return Ok(new List<Animes>());
         }
