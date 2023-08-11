@@ -14,6 +14,9 @@ public class Animes {
     public String Name { get; set;}
     public String Icon { get; set;}
     public String Background { get; set;}
+
+    [StringLength(20)]
+    public String Type { get; set;} = "TV";
     
 }
 

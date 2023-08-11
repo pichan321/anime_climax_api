@@ -16,6 +16,7 @@
           "SixLabors.ImageSharp": "3.0.1",
           "Swashbuckle.AspNetCore": "6.4.0",
           "uplink.NET": "2.9.3135",
+          "uplink.NET.Linux": "2.9.3135",
           "uplink.NET.Win": "2.9.3135"
         },
         "runtime": {
@@ -486,6 +487,15 @@
           }
         }
       },
+      "uplink.NET.Linux/2.9.3135": {
+        "runtimeTargets": {
+          "runtimes/linux-x64/native/storj_uplink.so": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
       "uplink.NET.Win/2.9.3135": {
         "runtimeTargets": {
           "runtimes/win-x64/native/storj_uplink.dll": {
@@ -815,6 +825,13 @@
       "sha512": "sha512-FAU720/7SiQ7Bg9zeODHc8NP3EGBCqQHcBbO/6qWo+Go27lsi9EQNRY3eXDivOMjHTTlncsm6LqKyQC9fjJ3bA==",
       "path": "uplink.net/2.9.3135",
       "hashPath": "uplink.net.2.9.3135.nupkg.sha512"
+    },
+    "uplink.NET.Linux/2.9.3135": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ynscG7H5IR9tPeGMaJeO0yczZ8V/vHMnt6iliXJFcmwHvzn2Tpmo/hRE/nkSgfcoag5TGs9EzAQz4wb1zK7D9w==",
+      "path": "uplink.net.linux/2.9.3135",
+      "hashPath": "uplink.net.linux.2.9.3135.nupkg.sha512"
     },
     "uplink.NET.Win/2.9.3135": {
       "type": "package",
