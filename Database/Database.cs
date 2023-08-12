@@ -19,7 +19,7 @@ public class DataContext : DbContext
         Configuration = configuration;
     }
 
-    public DataContext(DbContextOptions<DataContext> options) : base(options){}
+    // public DataContext(DbContextOptions<DataContext> options) : base(options){}
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
