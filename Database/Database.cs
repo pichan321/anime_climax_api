@@ -4,7 +4,6 @@ using anime_climax_api.Models;
 using Npgsql;
 
 namespace anime_climax_api.Database;
-
 public class DataContext : DbContext
 {
     protected readonly IConfiguration Configuration;
