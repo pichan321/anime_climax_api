@@ -69,10 +69,16 @@ public class AnimeController : ControllerBase {
         if (filter is null) {filter = "";}
         //// || c.Episode.ToString().Contains(filter)
         List<Clips> clips = filter == "" 
-        ? _db.Clips.Include(clip => clip.Anime).Where(c => c.Anime.ID == id).OrderByDescending(c => c.Episode).OrderByDescending(c => c.DateAdded).Skip(skip).Take(RESULT_PER_PAGE).ToList()
+        ? _db.Clips.Include(clip => clip.Anime).Where(c => c.Anime.ID == id).OrderByDescending(c => c.Episode).Skip(skip).Take(RESULT_PER_PAGE).ToList()
         : _db.Clips.Include(clip => clip.Anime).Where(
-            c => c.Anime.ID == id && (c.Caption.ToLower().Contains(filter.ToLower()) || c.Episode.ToString().Contains(filter.ToLower()))).OrderByDescending(c => c.Episode).OrderByDescending(c => c.DateAdded).Skip(skip).Take(RESULT_PER_PAGE).ToList();
+            c => c.Anime.ID == id && (c.Caption.ToLower().Contains(filter.ToLower()) || c.Episode.ToString().Contains(filter.ToLower()))).OrderByDescending(c => c.Episode).Skip(skip).Take(RESULT_PER_PAGE).ToList();
         return Ok(clips);
+    }
+
+    [HttpGet("{id}/clips/preview/{clip_id}")]
+    public async Task<IActionResult> getClipPreview([FromQuery] int section, int id, int clip_id) {
+        
+        return null;
     }
 
     [HttpPost("add")]
