@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -5,7 +6,6 @@ namespace anime_climax_api.Models;
 
 [Table("Clips",  Schema = "public")]
 public class Clips {
-
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int ID { get; set; } 
@@ -21,4 +21,9 @@ public class Clips {
 
     public DateTime DateAdded {get; set;}
 
+    [DefaultValue(0)]
+    public int Views {get; set;}
+
+    [DefaultValue(0)]
+    public int Downloads {get; set;}
 }

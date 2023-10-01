@@ -3,6 +3,7 @@ using anime_climax_api.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+var AnimeClimaxOnly = "AnimeClimaxOnly";
 // Add services to the container.
 
 
@@ -24,6 +25,14 @@ builder.Services.AddCors(options =>
                       {
                          policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                       });
+    options.AddPolicy(name: AnimeClimaxOnly,
+        policy => {
+            policy.WithOrigins(
+                "https://anime-climax.vercel.app/",
+                "https://www.anime-climax.vercel.app/"
+            ).AllowAnyHeader().AllowAnyMethod();
+        }
+    );
 });
 
 var app = builder.Build();
