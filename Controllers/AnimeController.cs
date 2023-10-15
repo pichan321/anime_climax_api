@@ -21,6 +21,8 @@ namespace anime_climax_api.Controllers;
 [Route("anime/")]
 public class AnimeController : ControllerBase {
     private const String SECRET = "pichan327";
+
+    private readonly int ANIME_RESULT_PER_PAGE = 30;
     private readonly int RESULT_PER_PAGE = 16;
     private readonly DataContext _db;
 
@@ -36,14 +38,34 @@ public class AnimeController : ControllerBase {
 
     
     [HttpGet("animes")]
-    public IActionResult GetAllAnimes([FromQuery] String? filter)
+    public IActionResult GetAllAnimes([FromQuery] String? filter, [FromQuery] int page = 1)
     {
-        if (filter == "" || filter is null || filter.ToLower().Contains("any") || filter.ToLower().Contains("all")) {
-            List<Animes> allAnimes = _db.Animes.ToList();
-            return Ok(allAnimes);
+        if (page <= 0) {
+             return Ok(new List<Animes>());
         }
-        List<Animes> filteredAnimes = _db.Animes.Where(anime => anime.Type.ToLower().Contains(filter.ToLower())).ToList();
-        return Ok(filteredAnimes);
+        int skip = page == 1 ? 0 : ANIME_RESULT_PER_PAGE * (page - 1);
+
+        if (filter == "" || filter is null || filter.ToLower().Contains("any") || filter.ToLower().Contains("all")) {
+            List<Animes> allAnimes = _db.Animes.Skip(skip).Take(ANIME_RESULT_PER_PAGE).ToList();
+            int totalRows = _db.Animes.Count();
+            return Ok(new {
+                data = allAnimes,
+                currentPage = page,
+                totalRows = totalRows,
+                totalPages = (int)Math.Ceiling((double)((double)(totalRows) / ANIME_RESULT_PER_PAGE)),
+                });
+        }
+
+
+
+        List<Animes> filteredAnimes = _db.Animes.Where(anime => anime.Type.ToLower().Contains(filter.ToLower())).Skip(skip).Take(ANIME_RESULT_PER_PAGE).ToList();
+        int allRows = _db.Animes.Where(anime => anime.Type.ToLower().Contains(filter.ToLower())).Count();
+        return Ok(new {
+                data = filteredAnimes,
+                currentPage = page,
+                totalRows = allRows,
+                totalPages = (int)Math.Ceiling((double)((double)(allRows) / ANIME_RESULT_PER_PAGE)),
+                });
     }
 
     [HttpGet("{id}")]
@@ -63,16 +85,40 @@ public class AnimeController : ControllerBase {
     [HttpGet("{id}/clips")]
     public IActionResult GetClips(int id, [FromQuery] int page = 1, [FromQuery] String filter = "") {
         if (page <= 0) {
-            return Ok(new List<Animes>());
+            return Ok(new List<Clips>());
         }
+
         int skip = page == 1 ? 0 : RESULT_PER_PAGE * (page - 1);
+
         if (filter is null) {filter = "";}
         //// || c.Episode.ToString().Contains(filter)
-        List<Clips> clips = filter == "" 
-        ? _db.Clips.Include(clip => clip.Anime).Where(c => c.Anime.ID == id).Distinct().OrderByDescending(c => c.Episode).Skip(skip).Take(RESULT_PER_PAGE).ToList()
-        : _db.Clips.Include(clip => clip.Anime).Where(
+        List<Clips> clips; 
+        int totalRows, totalPages;
+        if (filter == "") {
+            clips = _db.Clips.Include(clip => clip.Anime).Where(c => c.Anime.ID == id).Distinct().OrderByDescending(c => c.Episode).Skip(skip).Take(RESULT_PER_PAGE).ToList();
+            totalRows = _db.Clips.Include(clip => clip.Anime).Where(c => c.Anime.ID == id).Distinct().Count();
+            totalPages = (int)Math.Ceiling((double)((double)(totalRows) / RESULT_PER_PAGE));
+            return Ok(new {
+                data = clips,
+                currentPage = page,
+                totalRows = totalRows,
+                totalPages = totalPages,
+                });
+
+        }
+
+        clips =  _db.Clips.Include(clip => clip.Anime).Where(
             c => c.Anime.ID == id && (c.Caption.ToLower().Contains(filter.ToLower()) || c.Episode.ToString().Contains(filter.ToLower()))).Distinct().OrderByDescending(c => c.Episode).Skip(skip).Take(RESULT_PER_PAGE).ToList();
-        return Ok(clips);
+        totalRows = _db.Clips.Include(clip => clip.Anime).Where(
+            c => c.Anime.ID == id && (c.Caption.ToLower().Contains(filter.ToLower()) || c.Episode.ToString().Contains(filter.ToLower()))).Distinct().Count();
+        totalPages = (int)Math.Ceiling((double)((double)(totalRows) / RESULT_PER_PAGE));
+        
+        return Ok(new {
+                data = clips,
+                currentPage = page,
+                totalRows = totalRows,
+                totalPages = totalPages,
+                });
     
     }
 
