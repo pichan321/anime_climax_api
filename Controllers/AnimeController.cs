@@ -38,11 +38,16 @@ public class AnimeController : ControllerBase {
 
     
     [HttpGet("animes")]
-    public IActionResult GetAllAnimes([FromQuery] String? filter, [FromQuery] int page = 1)
-    {
+    public IActionResult GetAllAnimes([FromQuery] bool? all, [FromQuery] string? filter, [FromQuery] int page = 1) {
         if (page <= 0) {
              return Ok(new List<Animes>());
         }
+        
+        if (all.HasValue && all.Value) {
+            List<Animes> allAnimes = _db.Animes.ToList();
+            return Ok(allAnimes);
+        }
+
         int skip = page == 1 ? 0 : ANIME_RESULT_PER_PAGE * (page - 1);
 
         if (filter == "" || filter is null || filter.ToLower().Contains("any") || filter.ToLower().Contains("all")) {
