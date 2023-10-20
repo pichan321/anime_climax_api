@@ -15,6 +15,17 @@ public class ClipController: ControllerBase {
         _db = db;
     }
 
+    [HttpGet("{clip_id}")]
+    [EnableCors("_myAllowSpecificOrigins")]
+    public IActionResult GetClipMetadata([FromRoute] int clip_id) {
+        var clip = _db.Clips.Find(clip_id);
+        if (clip == null) {
+            return NotFound();
+        }
+
+        return Ok(clip);
+    }
+
     [HttpGet("view/{clip_id}")]
     public IActionResult View([FromRoute] int clip_id) {
         Clips clip = _db.Clips.Where(clip => clip_id.Equals(clip.ID)).FirstOrDefault();
