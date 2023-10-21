@@ -200,17 +200,19 @@ public IActionResult DeleteAnime(int id)
                 const int bufferSize = 5 * 1024 * 1024;
                 byte[] bufferArray = new byte[bufferSize];
                 uint part = 1;
-                Stream stream = clip.File.OpenReadStream();
-                int n;
-                while ((n = stream.Read(bufferArray, 0, bufferSize)) > 0) {
-                        await uploadService.Item3.UploadPartAsync(bucket.BucketName, uploadService.Item1, uploadService.Item2.UploadId, part, bufferArray[0..n]);
-                        part++;
-                        Console.WriteLine(n);
-                }
-            
-                await uploadService.Item3.CommitUploadAsync(bucket.BucketName, uploadService.Item1, uploadService.Item2.UploadId, new CommitUploadOptions());
+
+                using (Stream stream = clip.File.OpenReadStream()) {
+                    int n;
+                    while ((n = stream.Read(bufferArray, 0, bufferSize)) > 0) {
+                            await uploadService.Item3.UploadPartAsync(bucket.BucketName, uploadService.Item1, uploadService.Item2.UploadId, part, bufferArray[0..n]);
+                            part++;
+                            // Console.WriteLine(n);
+                    }
                 
-                Console.WriteLine("Episode: " + clip.Episode);
+                    await uploadService.Item3.CommitUploadAsync(bucket.BucketName, uploadService.Item1, uploadService.Item2.UploadId, new CommitUploadOptions());
+                }
+       
+                // Console.WriteLine("Episode: " + clip.Episode);
                 bucket.Usage += fileSizeMB;
                 Animes anime = _db.Animes.Where(anime => anime.ID == clip.AnimeID).FirstOrDefault();
                 Clips clipToAdd = new Clips{
