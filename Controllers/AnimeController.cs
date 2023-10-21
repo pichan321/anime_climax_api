@@ -185,7 +185,7 @@ public IActionResult DeleteAnime(int id)
             {
                 if (clip.File.Length == 0){return BadRequest();}
 
-                byte[] buffer = new byte[10 * 1024 * 1024];
+                // byte[] buffer = new byte[10 * 1024 * 1024];
              
                 Uploader uploader = new Uploader(_db);
                 float fileSizeMB = clip.File.Length / (1024 * 1024);
@@ -197,7 +197,7 @@ public IActionResult DeleteAnime(int id)
                 
                 var uploadService = await uploader.Upload(bucket, clip);
                 
-                const int bufferSize = 10 * 1024 * 1024;
+                const int bufferSize = 5 * 1024 * 1024;
                 byte[] bufferArray = new byte[bufferSize];
                 uint part = 1;
                 Stream stream = clip.File.OpenReadStream();
@@ -239,6 +239,7 @@ public IActionResult DeleteAnime(int id)
 
         return Ok();
     }
+
 
 [HttpPost("image")]
     public async Task<IActionResult> ProcessImage(IFormFile file)
