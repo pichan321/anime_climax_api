@@ -197,7 +197,7 @@ public IActionResult DeleteAnime(int id)
                 
                 var uploadService = await uploader.Upload(bucket, clip);
                 
-                const int bufferSize = 50 * 1024 * 1024;
+                const int bufferSize = 20 * 1024 * 1024;
                 byte[] bufferArray = new byte[bufferSize];
                 uint part = 1;
 
