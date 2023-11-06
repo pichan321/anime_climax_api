@@ -204,9 +204,10 @@ public IActionResult DeleteAnime(int id)
                 using (Stream stream = clip.File.OpenReadStream()) {
                     int n;
                     while ((n = stream.Read(bufferArray, 0, bufferSize)) > 0) {
+                            Console.WriteLine(String.Format("Video: {0} | Part: {1} | Uploading: {2} bytes", clip.Caption, part, n));
                             await uploadService.Item3.UploadPartAsync(bucket.BucketName, uploadService.Item1, uploadService.Item2.UploadId, part, bufferArray[0..n]);
                             part++;
-                            // Console.WriteLine(n);
+              
                     }
                 
                     await uploadService.Item3.CommitUploadAsync(bucket.BucketName, uploadService.Item1, uploadService.Item2.UploadId, new CommitUploadOptions());
