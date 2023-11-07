@@ -225,6 +225,7 @@ public IActionResult DeleteAnime(int id)
                     Size = clip.File.Length,
                     SizeMB = fileSizeMB,
                     Link = bucket.ShareLink + uploadService.Item1 + "?wrap=0",
+                    Timestamps = clip.Timestamps,
                     DateAdded = DateTimeOffset.UtcNow.UtcDateTime,
                 };
                 _db.Buckets.Update(bucket);

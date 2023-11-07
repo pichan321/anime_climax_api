@@ -8,4 +8,6 @@ public class NewClip {
         public String Caption { get; set; }
         public String? Tags { get; set; } = "";
         public String? Thumbnail { get; set;} = "";
+
+        public String? Timestamps {get; set;} = "";
 }
