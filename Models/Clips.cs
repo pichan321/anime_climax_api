@@ -21,6 +21,9 @@ public class Clips {
 
     public DateTime DateAdded {get; set;}
 
+    [DefaultValue("")]
+    public String Timestamps {get; set;}
+
     [DefaultValue(0)]
     public int Views {get; set;}
 

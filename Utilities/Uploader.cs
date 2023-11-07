@@ -49,7 +49,7 @@ public class Uploader {
             long timeStamp = getUnixTimestamp();
 
             string objectKey = string.Format("{0}-{1}", timeStamp, clip.File.FileName);
-            Console.WriteLine("Object key" + objectKey);
+            Console.WriteLine("Object key " + objectKey);
             UploadInfo uploadInfo = await uploadService.BeginUploadAsync(bucket.BucketName, objectKey , new UploadOptions());
          
             return (objectKey, uploadInfo, uploadService);
