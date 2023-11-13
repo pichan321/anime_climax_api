@@ -32,10 +32,14 @@ public class AnimeController : ControllerBase
         _db = db;
     }
 
-    [HttpGet("")]
-    public String Hello()
-    {
-        return "Hello there";
+    [HttpGet("summary")]
+    public IActionResult GetSummary() {
+        return Ok(
+            new {
+                animeCount = _db.Animes.Count(),
+                clipCount = _db.Clips.Count(),
+            }
+        );
     }
 
 
