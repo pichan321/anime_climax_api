@@ -66,6 +66,7 @@ app.UseCors(MyAllowSpecificOrigins);
 app.UseHttpLogging();
 app.UseAuthorization();
 
+app.MapControllers();
 app.MapGraphQL();
 //      app.UsePlayground(new PlaygroundOptions
 //   {
