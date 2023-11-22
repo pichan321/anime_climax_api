@@ -44,7 +44,7 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins(
                 "https://anime-climax.vercel.app/",
-                "https://www.anime-climax.vercel.app/",
+                "https://www.anime-climax.vercel.app/"
                 // "http://localhost:3000"
             ).AllowAnyHeader().AllowAnyMethod();
         }
