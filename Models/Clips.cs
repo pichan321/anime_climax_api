@@ -16,7 +16,7 @@ public class Clips {
     public int? Episode { get; set; }
     public long Size { get; set; }
     public float SizeMB { get; set; }
-    public Animes Anime { get; set; }    
+    public Animes? Anime { get; set; }    
     public String Thumbnail { get; set;} 
     public String Link { get; set; }
 

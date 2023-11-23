@@ -51,7 +51,7 @@ builder.Services.AddCors(options =>
     );
 });
 
-builder.Services.AddGraphQLServer().RegisterDbContext<DataContext>().AddQueryType<Query>().AddFiltering().AddSorting();
+builder.Services.AddGraphQLServer().RegisterDbContext<DataContext>().AddQueryType<Query>().AddMutationType<Mutation>().AddFiltering().AddSorting();
 
 var app = builder.Build();
 
